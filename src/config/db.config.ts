@@ -8,7 +8,10 @@ const connectDB = async () => {
     }
 
     try {
-        const con = await mongoose.connect(AppConfig.db.url);
+        const con = await mongoose.connect(AppConfig.db.url, {
+            connectTimeoutMS: 60000, // Increase timeout to 60 seconds
+            socketTimeoutMS: 60000
+        });
         // console.log(`Connected: ${con.connection.host} : ${con.connection.name}`);
 
         mongoose.connection.on('disconnect', () => {
