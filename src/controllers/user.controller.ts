@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import UserService from '../services/user.service';
 import CustomError from '../errors/CustomError';
+import { log } from 'console';
 
 class UserController {
     private userService: UserService;
@@ -28,9 +29,7 @@ class UserController {
         } catch (error: any) {
             res.status(500).json({
                 status: false,
-                message: error.message,
-                statusCode: 500,
-                error: error.message
+                message: error.message
             });
         }
     };
@@ -61,13 +60,42 @@ class UserController {
         } catch (error: any) {
             res.status(500).json({
                 status: false,
-                message: error.message,
-                statusCode: 500,
-                error: error.message
+                message: error.message
             });
         }
     };
 
+    /**
+     * Verifies a user.
+     * @param {Request} req - The request object containing user data.
+     * @param {Response} res - The response object to send the result.
+     * @returns {Promise<void>} - A promise that resolves when the user is verified.
+     */
+    public verifyUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { email, otp } = req.body;
+
+            if (!email || !otp) {
+                const error = new CustomError('Email and OTP are required', 400);
+                return next(error);
+            }
+
+            const user = await this.userService.verifyUser(email, otp);
+            if (!user) {
+                const error = new CustomError('User not verified', 500);
+                return next(error);
+            }
+            res.status(200).json({
+                status: true,
+                message: 'User Verified Successfully'
+            });
+        } catch (error: any) {
+            res.status(500).json({
+                status: false,
+                message: error.message
+            });
+        }
+    };
     public deleteUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const users = await this.userService.deleteUsers();
@@ -82,9 +110,7 @@ class UserController {
         } catch (error: any) {
             res.status(500).json({
                 status: false,
-                message: error.message,
-                statusCode: 500,
-                error: error.message
+                message: error.message
             });
         }
     };
