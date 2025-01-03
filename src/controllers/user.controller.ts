@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import UserService from '../services/user.service';
 import CustomError from '../errors/CustomError';
-import { log } from 'console';
+import { UserValidation, ValidationError } from '../utils/user-schema.utils';
 
 class UserController {
     private userService: UserService;
@@ -15,9 +15,12 @@ class UserController {
      * @param {Response} res - The response object to send the result.
      * @returns {Promise<void>} - A promise that resolves when the user is created.
      */
+
     public createUser = async (req: Request, res: Response): Promise<void> => {
         try {
-            const user = await this.userService.createUserService(req.body);
+            const validate = UserValidation.validate(req.body, 'registration');
+
+            const user = await this.userService.createUserService(validate);
             if (!user) {
                 const error = new CustomError('User not created', 500);
                 throw error;
@@ -27,10 +30,52 @@ class UserController {
                 message: 'User Created Successfully and OTP sent to your email, Kindly check Your Email to activate your account...'
             });
         } catch (error: any) {
-            res.status(500).json({
-                status: false,
-                message: error.message
+            if (error instanceof ValidationError) {
+                // Handle validation errors
+                res.status(400).json({
+                    status: false,
+                    message: 'Validation Error',
+                    errors: error.errors // Return the array of validation errors
+                });
+            } else {
+                // Handle other errors
+                res.status(error.status || 500).json({
+                    status: false,
+                    message: error.message || 'An unexpected error occurred'
+                });
+            }
+        }
+    };
+
+    public loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const validate = UserValidation.validate(req.body, 'login');
+            const { email, password } = validate;
+
+            const user = await this.userService.loginUserService(email, password);
+            if (!user) {
+                const error = new CustomError('User not logged in', 500);
+                return next(error);
+            }
+            res.status(200).json({
+                status: true,
+                message: 'User Logged In Successfully'
             });
+        } catch (error: any) {
+            if (error instanceof ValidationError) {
+                // Handle validation errors
+                res.status(400).json({
+                    status: false,
+                    message: 'Validation Error',
+                    errors: error.errors // Return the array of validation errors
+                });
+            } else {
+                // Handle other errors
+                res.status(error.status || 500).json({
+                    status: false,
+                    message: error.message || 'An unexpected error occurred'
+                });
+            }
         }
     };
 
@@ -88,6 +133,30 @@ class UserController {
             res.status(200).json({
                 status: true,
                 message: 'User Verified Successfully'
+            });
+        } catch (error: any) {
+            res.status(500).json({
+                status: false,
+                message: error.message
+            });
+        }
+    };
+
+    public generateOtp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { email } = req.body;
+            if (!email) {
+                const error = new CustomError('Email is required', 400);
+                return next(error);
+            }
+            const user = await this.userService.generateOtp(email);
+            if (!user) {
+                const error = new CustomError('OTP not generated', 500);
+                return next(error);
+            }
+            res.status(200).json({
+                status: true,
+                message: 'OTP Generated Successfully and sent to your email'
             });
         } catch (error: any) {
             res.status(500).json({

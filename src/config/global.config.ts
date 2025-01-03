@@ -4,7 +4,7 @@ if (process.env.NODE_ENV !== 'production') configDotenv();
 
 const AppConfig: any = {
     db: {
-        url: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSKEY}@cluster0.iec4oco.mongodb.net/Upskill`
+        url: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSKEY}@cluster0.iec4oco.mongodb.net/Sira`
     },
 
     server: {
