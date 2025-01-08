@@ -2,11 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import UserService from '../services/user.service';
 import CustomError from '../errors/CustomError';
 import { UserValidation, ValidationError } from '../utils/user-schema.utils';
+import EmailOtpService from '../emails/otp.email';
 
 class UserController {
     private userService: UserService;
+    private EmailOtpService = new EmailOtpService();
     constructor(userService: UserService) {
         this.userService = userService;
+        this.EmailOtpService = new EmailOtpService()
     }
 
     /**
@@ -130,10 +133,13 @@ class UserController {
                 const error = new CustomError('User not verified', 500);
                 return next(error);
             }
-            res.status(200).json({
-                status: true,
-                message: 'User Verified Successfully'
-            });
+            if (user) {
+                await this.EmailOtpService.sendWelcomeEmail(email, user.name);
+                res.status(200).json({
+                    status: true,
+                    message: 'User Verified Successfully'
+                })
+            };
         } catch (error: any) {
             res.status(500).json({
                 status: false,
