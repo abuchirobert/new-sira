@@ -2,19 +2,18 @@ import { NextFunction, Request, Response } from 'express';
 import UserService from '../services/user.service';
 import CustomError from '../errors/CustomError';
 import { UserValidation, ValidationError } from '../utils/user-schema.utils';
-<<<<<<< HEAD
+
 import { generateToken } from '../utils/generate-token.util';
 import { log } from 'console';
-=======
+
 import EmailOtpService from '../emails/otp.email';
->>>>>>> ed2a47b218a5d6f93292971750cca97b3ed34405
 
 class UserController {
     private userService: UserService;
     private EmailOtpService = new EmailOtpService();
     constructor(userService: UserService) {
         this.userService = userService;
-        this.EmailOtpService = new EmailOtpService()
+        this.EmailOtpService = new EmailOtpService();
     }
 
     /**
@@ -147,8 +146,8 @@ class UserController {
                 res.status(200).json({
                     status: true,
                     message: 'User Verified Successfully'
-                })
-            };
+                });
+            }
         } catch (error: any) {
             res.status(500).json({
                 status: false,
