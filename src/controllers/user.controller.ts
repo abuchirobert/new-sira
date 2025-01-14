@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import UserService from '../services/user.service';
 import CustomError from '../errors/CustomError';
 import { UserValidation, ValidationError } from '../utils/user-schema.utils';
+import { generateToken } from '../utils/generate-token.util';
+import { log } from 'console';
 
 class UserController {
     private userService: UserService;
@@ -52,11 +54,15 @@ class UserController {
             const validate = UserValidation.validate(req.body, 'login');
             const { email, password } = validate;
 
-            const user = await this.userService.loginUserService(email, password);
+            const user: any = await this.userService.loginUserService(email, password);
             if (!user) {
                 const error = new CustomError('User not logged in', 500);
                 return next(error);
             }
+
+            const userId = user._id.toString();
+            const token = generateToken(res, { _id: userId });
+            log(token);
             res.status(200).json({
                 status: true,
                 message: 'User Logged In Successfully'
@@ -182,6 +188,19 @@ class UserController {
                 message: error.message
             });
         }
+    };
+
+    public logout = async (req: Request, res: Response) => {
+        res.cookie('token', '', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'none', // Matching your original cookie configuration
+            expires: new Date(0)
+        });
+        res.status(200).json({
+            status: true,
+            message: 'You have Successfully logged out'
+        });
     };
 }
 

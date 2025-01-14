@@ -47,6 +47,12 @@ class UserValidation {
         })
     });
 
+    static otpSchema = Joi.object({
+        otp: Joi.number().integer().optional().messages({
+            'number.base': 'OTP must be a number',
+            'number.integer': 'OTP must be an integer'
+        })
+    });
     static validate = (data: any, type: 'registration' | 'login' = 'registration') => {
         // Select the appropriate schema based on the type
         const schema = type === 'login' ? this.loginSchema : this.userSchema;
@@ -66,6 +72,23 @@ class UserValidation {
 
         return value;
     };
+
+    static validateOtp = (data: any) => {
+        const { error, value } = this.otpSchema.validate(data, {
+            abortEarly: false,
+            allowUnknown: true
+        });
+
+        if (error) {
+            const validationError = error.details.map((err) => ({
+                field: err.path[0],
+                message: err.message.replace(/^"(.*)" /, ' ').replace(/\s*is\s*/, ' ')
+            }));
+            throw new ValidationError('Validation Failed', validationError);
+        }
+
+        return value;
+    }
 }
 
 // Custom Validation Error
