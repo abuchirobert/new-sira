@@ -19,7 +19,7 @@ const connectDB = async () => {
             process.exit(1);
         });
     } catch (error: any | unknown) {
-        console.error(error.message);
+        console.error('Hello From there....', error.message);
         process.exit(1);
     }
 };

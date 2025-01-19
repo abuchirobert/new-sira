@@ -1,9 +1,8 @@
 import { IReport } from '../interfaces/report.interface';
 import fs from 'fs';
-import path from 'path';
-import { AppConfig } from '../config/global.config';
 import { Types } from 'mongoose';
 import Report from '../models/report.model';
+import cloudinary from '../config/cloudinary.config';
 
 class ReportService {
     /*
@@ -13,7 +12,7 @@ class ReportService {
     */
     private uploadToCloudinary = async (file: Express.Multer.File): Promise<string> => {
         try {
-            const result = await AppConfig.cloudinary.uploader.upload(file.path, {
+            const result = await cloudinary.uploader.upload(file.path, {
                 folder: 'reports',
                 resource_type: 'auto'
             });
@@ -61,3 +60,5 @@ class ReportService {
         }
     };
 }
+
+export default ReportService;

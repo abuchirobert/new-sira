@@ -1,9 +1,26 @@
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 
-class UploadMiddleware {
+class UploadMiddleWare {
+    private uploadDir: string;
+
+    constructor() {
+        // Create uploads directory in the project directory
+        this.uploadDir = path.join(process.cwd(), 'uploads');
+        this.ensureUploadDirectoryExists();
+    }
+
+    private ensureUploadDirectoryExists(): void {
+        if (!fs.existsSync(this.uploadDir)) {
+            fs.mkdirSync(this.uploadDir, { recursive: true });
+        }
+    }
+
     private storage = multer.diskStorage({
-        destination: '/uploads',
+        destination: (req, file, cb) => {
+            cb(null, this.uploadDir);
+        },
         filename: (req, file, cb) => {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
             cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
@@ -19,6 +36,7 @@ class UploadMiddleware {
         }
     };
 
+    // Method for multiple files upload
     public uploadMultiple = multer({
         storage: this.storage,
         limits: {
@@ -26,7 +44,7 @@ class UploadMiddleware {
             files: 5 // Maximum number of files allowed
         },
         fileFilter: this.fileFilter
-    }).array('files', 5);
+    }).array('files', 5); // 'files' is the field name, 5 is the maximum number of files
 }
 
-export default new UploadMiddleware();
+export default new UploadMiddleWare();

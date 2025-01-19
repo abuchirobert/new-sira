@@ -5,9 +5,9 @@ export enum EvidenceStatus {
     RESOLVED = 'resolved'
 }
 
-interface IReport extends Document {
+export interface IReport extends Document {
     userId: Types.ObjectId;
-    evidence: string;
+    evidence: Array<string>;
     issueType: string;
     location: string;
     description: string;
