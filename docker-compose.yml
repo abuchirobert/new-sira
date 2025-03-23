@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+    app:
+        build: .
+        ports:
+            - '3000:3000'
+        volumes:
+            - ./src:/usr/src/app/src
+            - /usr/src/app/node_modules
+        environment:
+            - MONGO_USER=${MONGO_USER}
+            - MONGO_PASSKEY=${MONGO_PASSKEY}
+            - MONGO_CLUSTER_LINK=${MONGO_CLUSTER_LINK}
+        command: npm run dev
+
+    # Uncomment if you need a database
+    # db:
+    #   image: postgres:13
+    #   ports:
+    #     - "5432:5432"
+    #   environment:
+    #     - POSTGRES_USER=postgres
+    #     - POSTGRES_PASSWORD=postgres
+    #     - POSTGRES_DB=myapp
+    #   volumes:
+    #     - postgres_data:/var/lib/postgresql/data
+# Uncomment if you need a database
+# volumes:
+#   postgres_data:
