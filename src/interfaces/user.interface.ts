@@ -14,6 +14,7 @@ interface IUser extends Document {
     otp?: number;
     otpExpires?: Date;
     status: boolean;
+    comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 export interface IUserInputDTO {
