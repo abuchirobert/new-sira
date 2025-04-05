@@ -14,6 +14,6 @@ const reportController = new ReportController(reportService);
 router.route('/user').post(imageUploadMiddleware.uploadMultiple, reportController.createReport);
 router.route('/update/:id').put(authToken.verifyToken, imageUploadMiddleware.uploadMultiple, reportController.updateReport);
 router.route('/delete/:id').delete(authToken.verifyToken, reportController.deleteReport);
-router.route('/get/:id').get(authToken.verifyToken, reportController.getReport);
+router.route('/get-my-report').get(authToken.verifyToken, reportController.getReport);
 
 export default router;

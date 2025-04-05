@@ -71,13 +71,13 @@ class ReportController {
 
     public getReport = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const reportId = req.params.id;
+            const reportId = req.user._id;
             const report = await this.reportService.getReport(reportId);
 
             if (!report) {
                 res.status(404).json({
                     success: false,
-                    message: 'Report not found'
+                    message: `You've not Created a Report Yet...`
                 });
                 return;
             }
