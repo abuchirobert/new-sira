@@ -17,20 +17,18 @@ class UserService {
         // if (!name || !email || !password || !confirmPassword) {
         //     throw new Error('All fields are required');
         // }
-        // if (password !== confirmPassword) {
-        //     throw new Error('Password does not match');
-        // }
+        if (password !== confirmPassword) {
+            throw new Error('Password does not match');
+        }
 
         const emailExists = await this.emailExists(email);
         if (emailExists) {
             throw new Error('Email already exists');
         }
 
-        const passwordHash = bcrypt.hashSync(password, 10);
-
         const otp = UtilFunctions.generateOTP();
         const otpExpires = UtilFunctions.generateOTPExpiry();
-        const user = await User.create({ name, email, password: passwordHash, otp, otpExpires });
+        const user = await User.create({ name, email, password, otp, otpExpires });
 
         this.emailOtpService.sendOtpEmail(email, otp);
         return user;

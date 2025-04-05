@@ -2,6 +2,7 @@ import { Types } from 'mongoose';
 import CustomError from '../../errors/CustomError';
 import { EvidenceStatus } from '../../interfaces/report.interface';
 import Report from '../../models/report.model';
+import { log } from 'console';
 
 class AdminService {
     /**
@@ -47,12 +48,23 @@ class AdminService {
      * @param userId MongoDB User ID
      * @returns Array of reports for specific user
      */
-    async getReportsByUser(userId: Types.ObjectId) {
+    async getReportsByUser(id: Types.ObjectId) {
         try {
-            const reports = await Report.find({ userId }).populate('userId', 'name email');
+            const reports = await Report.find({ _id: id }).populate('_id', 'name email');
+            log(reports, 'Reports From ID');
+            console.log(`Found ${reports.length} reports`);
             return reports;
         } catch (error: any) {
             throw new Error(`Failed to retrieve user reports: ${error.message}`);
+        }
+    }
+
+    async deleteReport(reportId: Types.ObjectId) {
+        try {
+            const report = await Report.findByIdAndDelete(reportId);
+            return report;
+        } catch (error: any) {
+            throw new Error(`Failed to delete report: ${error.message}`);
         }
     }
 }

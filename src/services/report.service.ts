@@ -3,6 +3,7 @@ import fs from 'fs';
 import { Types } from 'mongoose';
 import Report from '../models/report.model';
 import cloudinary from '../config/cloudinary.config';
+import { log } from 'console';
 
 class ReportService {
     /*
@@ -27,6 +28,7 @@ class ReportService {
             throw error;
         }
     };
+
     public createReport = async (files: Express.Multer.File | undefined, data: Partial<IReport>, userId: string): Promise<IReport> => {
         if (!files) throw new Error('No File(s) provided, Kindly Provide them to Continue');
 
@@ -37,7 +39,7 @@ class ReportService {
         try {
             const uploadedPromises = fileArray.map((file) => this.uploadToCloudinary(file));
             const fileUrls = await Promise.all(uploadedPromises);
-
+            log(userId, 'Coming from Service on creation');
             const result = {
                 userId: new Types.ObjectId(userId),
                 evidence: fileUrls,
@@ -65,10 +67,10 @@ class ReportService {
     //     const
     // }
 
-    public getReport = async (reportId: string): Promise<IReport | null> => {
-        if (!Types.ObjectId.isValid(reportId)) throw new Error('Invalid Report ID Provided');
-        const id = new Types.ObjectId(reportId);
-        const report = await Report.findById(id);
+    public getReport = async (userId: string): Promise<IReport[]> => {
+        if (!Types.ObjectId.isValid(userId)) throw new Error('Invalid User ID Provided');
+        const id = new Types.ObjectId(userId);
+        const report = await Report.find({ userId: id });
         return report;
     };
 

@@ -3,6 +3,7 @@ import adminService from '../../services/admin/admin.service';
 import CustomError from '../../errors/CustomError';
 import { Types } from 'mongoose';
 import { EvidenceStatus } from '../../interfaces/report.interface';
+import { log } from 'console';
 
 console.log('AdminService:', adminService); // 🔍 Debugging
 
@@ -59,10 +60,34 @@ class AdminController {
 
             const reports = await adminService.getReportsByUser(new Types.ObjectId(userId));
 
+            log(reports, 'Reports From ID');
+
             res.status(200).json({
                 status: true,
                 message: 'User reports retrieved successfully',
                 data: reports
+            });
+        } catch (error: any) {
+            res.status(500).json({
+                status: false,
+                message: error.message,
+                stack: error.stack
+            });
+            // next(new CustomError(error.message, 500));
+        }
+    };
+
+    public deleteReport = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { reportId } = req.params;
+            const report = await adminService.deleteReport(new Types.ObjectId(reportId));
+            if (!report) {
+                return next(new CustomError('Report not found', 404));
+            }
+            res.status(200).json({
+                status: true,
+                message: 'Report deleted successfully',
+                data: report
             });
         } catch (error: any) {
             next(new CustomError(error.message, 500));

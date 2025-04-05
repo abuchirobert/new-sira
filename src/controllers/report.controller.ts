@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import ReportService from '../services/report.service';
+import { log } from 'console';
 
 class ReportController {
     private reportService: ReportService;
@@ -11,7 +12,8 @@ class ReportController {
         try {
             const files: any = req.file || req.files;
             const reportData = req.body;
-            const userId = req.user;
+            const userId = req.user._id;
+            log(userId, 'Coming from Controller create Report');
 
             const report = await this.reportService.createReport(files, reportData, userId);
 
@@ -20,10 +22,11 @@ class ReportController {
                 message: `Report created successfully...`,
                 data: report
             });
-        } catch (error) {
+        } catch (error: any) {
             res.status(500).json({
                 success: false,
-                message: error instanceof Error ? error.message : 'failed to create report'
+                message: error instanceof Error ? error.message : 'failed to create report',
+                stack: error.stack
             });
         }
     };
@@ -72,12 +75,13 @@ class ReportController {
     public getReport = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const reportId = req.user._id;
+            log(reportId, 'Coming from Controller');
             const report = await this.reportService.getReport(reportId);
 
-            if (!report) {
+            if (report.length === 0) {
                 res.status(404).json({
                     success: false,
-                    message: `You've not Created a Report Yet...`
+                    message: `You've not Created a Report Yet, Kindly Create a Report to Continue....`
                 });
                 return;
             }
