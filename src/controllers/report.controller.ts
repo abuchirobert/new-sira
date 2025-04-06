@@ -13,7 +13,7 @@ class ReportController {
             const files: any = req.file || req.files;
             const reportData = req.body;
             const userId = req.user._id;
-            log(userId, 'Coming from Controller create Report');
+            //log(userId, 'Coming from Controller create Report');
 
             const report = await this.reportService.createReport(files, reportData, userId);
 
@@ -75,7 +75,7 @@ class ReportController {
     public getReport = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const reportId = req.user._id;
-            log(reportId, 'Coming from Controller');
+           // log(reportId, 'Coming from Controller');
             const report = await this.reportService.getReport(reportId);
 
             if (report.length === 0) {

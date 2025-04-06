@@ -39,7 +39,7 @@ class ReportService {
         try {
             const uploadedPromises = fileArray.map((file) => this.uploadToCloudinary(file));
             const fileUrls = await Promise.all(uploadedPromises);
-            log(userId, 'Coming from Service on creation');
+            //log(userId, 'Coming from Service on creation');
             const result = {
                 userId: new Types.ObjectId(userId),
                 evidence: fileUrls,
