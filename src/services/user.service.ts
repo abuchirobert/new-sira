@@ -73,7 +73,7 @@ class UserService {
             throw new Error('User not found');
         }
 
-        if (user.otp !== otp) {
+        if (user.otp !== Number(otp)) {
             throw new Error('Invalid OTP');
         }
 

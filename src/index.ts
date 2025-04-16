@@ -3,10 +3,11 @@ import { AppConfig } from './config/global.config';
 import CustomError from './errors/CustomError';
 import globalError from './errors/global.error';
 import router from './routes';
-import { configDotenv } from 'dotenv';
+import 'dotenv/config';
 import connectDB from './config/db.config';
 import cookieParser from 'cookie-parser';
-configDotenv();
+import cors from 'cors';
+
 connectDB();
 
 const app: Application = express();
@@ -14,6 +15,13 @@ const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(
+    cors({
+        origin: 'http://localhost:3000',
+        credentials: true
+    })
+);
 
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.send('Hello, Welcome To Sira Project, A Project that Helps students to Report All the Incidents in the School, Enjoy the App...');
