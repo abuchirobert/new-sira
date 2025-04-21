@@ -20,4 +20,5 @@ router
 router.route('/user/verify').post(userController.verifyUser);
 router.route('/user/login').post(userController.loginUser);
 router.route('/user/logout').post(userController.logout);
+router.route('/user/me').get(authToken.verifyToken, userController.getUser);
 export default router;

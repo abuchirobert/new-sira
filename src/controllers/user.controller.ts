@@ -122,6 +122,22 @@ class UserController {
     };
 
     /**
+     * Gets the current logged in user.
+     */
+
+    public getUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        if (!req.user) {
+            const error = new CustomError('User not found', 404);
+            return next(error);
+        }
+        res.status(200).json({
+            status: true,
+            message: 'User Found',
+            data: req.user
+        });
+    };
+
+    /**
      * Verifies a user.
      * @param {Request} req - The request object containing user data.
      * @param {Response} res - The response object to send the result.
@@ -201,9 +217,10 @@ class UserController {
     public logout = async (req: Request, res: Response) => {
         res.cookie('token', '', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
             sameSite: 'none', // Matching your original cookie configuration
-            expires: new Date(0)
+            expires: new Date(0),
+            partitioned: true
         });
         res.status(200).json({
             status: true,
