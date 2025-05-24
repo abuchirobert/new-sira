@@ -33,7 +33,9 @@ class AuthToken {
             let token;
             if (req.cookies && req.cookies.token) {
                 token = req.cookies.token;
-            } else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+            }
+
+            if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
                 token = req.headers.authorization.split(' ')[1];
             }
 
@@ -43,7 +45,6 @@ class AuthToken {
             }
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
-            log('decoded', decoded);
             log('User ID from token:', decoded.id);
             const user = await User.findById(decoded.id).select('-password');
             log('User found in database:', user);

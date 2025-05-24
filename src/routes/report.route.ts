@@ -11,9 +11,10 @@ const authToken = new AuthToken();
 
 const reportController = new ReportController(reportService);
 
-router.route('/user').post(authToken.verifyToken, imageUploadMiddleware.uploadMultiple, reportController.createReport); //create post route
-router.route('/update/:id').put(authToken.verifyToken, imageUploadMiddleware.uploadMultiple, reportController.updateReport);
-router.route('/delete/:id').delete(authToken.verifyToken, reportController.deleteReport);
-router.route('/get-my-report').get(authToken.verifyToken, reportController.getReport);
+router.post('/user', authToken.verifyToken, imageUploadMiddleware.uploadMultiple, reportController.createReport); //create post route
+router.put('/update/:id', authToken.verifyToken, imageUploadMiddleware.uploadMultiple, reportController.updateReport);
+router.delete('/delete/:id', authToken.verifyToken, reportController.deleteReport);
+router.get('/get-my-report', authToken.verifyToken, reportController.getReports);
+router.get('/get-my-report/:reportId', authToken.verifyToken, reportController.getReport);
 
 export default router;

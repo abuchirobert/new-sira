@@ -9,6 +9,7 @@ class ReportController {
     }
 
     public createReport = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        console.log('fin', req.body, req.files);
         try {
             const files: any = req.file || req.files;
             const reportData = req.body;
@@ -72,16 +73,42 @@ class ReportController {
         }
     };
 
-    public getReport = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    public getReports = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const reportId = req.user._id;
-           // log(reportId, 'Coming from Controller');
-            const report = await this.reportService.getReport(reportId);
+            // log(reportId, 'Coming from Controller');
+            const report = await this.reportService.getReports(reportId);
 
             if (report.length === 0) {
                 res.status(404).json({
                     success: false,
                     message: `You've not Created a Report Yet, Kindly Create a Report to Continue....`
+                });
+                return;
+            }
+
+            res.status(200).json({
+                success: true,
+                data: report
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error instanceof Error ? error.message : 'Failed to fetch report'
+            });
+        }
+    };
+
+    public getReport = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const userId = req.user._id;
+            const reportId = req.params.reportId;
+            const report = await this.reportService.getReportById(reportId, userId);
+
+            if (!report) {
+                res.status(404).json({
+                    success: false,
+                    message: `Report Not Found`
                 });
                 return;
             }

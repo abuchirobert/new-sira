@@ -70,7 +70,8 @@ class UserController {
             log(token);
             res.status(200).json({
                 status: true,
-                message: 'User Logged In Successfully'
+                message: 'User Logged In Successfully',
+                data: user
             });
         } catch (error: any) {
             if (error instanceof ValidationError) {
@@ -216,11 +217,11 @@ class UserController {
 
     public logout = async (req: Request, res: Response) => {
         res.cookie('token', '', {
-            httpOnly: true,
+            // httpOnly: true,
             secure: true,
             sameSite: 'none', // Matching your original cookie configuration
-            expires: new Date(0),
-            partitioned: true
+            expires: new Date(0)
+            // partitioned: true
         });
         res.status(200).json({
             status: true,

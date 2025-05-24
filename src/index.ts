@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 app.use(
     cors({
-        origin: 'http://localhost:3000',
+        origin: ['http://localhost:3000'],
         credentials: true
     })
 );
@@ -29,7 +29,7 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
 app.use('/api/v1', router);
 
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
-    const error = new CustomError(`Oops...., It seems like the Route ${req.originalUrl} You are looking for does not Exist`, 404);
+    const error = new CustomError(`Oops...., It seems like the Route ${req.method} ${req.originalUrl} You are looking for does not Exist`, 404);
     next(error);
 });
 

@@ -3,6 +3,8 @@ import CustomError from './CustomError';
 import { MulterError } from 'multer';
 
 const globalError = (err: any, req: Request, res: Response, next: NextFunction) => {
+    console.log('An error occurred', err);
+
     if (err instanceof CustomError) {
         res.status(err.statusCode).json({
             status: err.status,

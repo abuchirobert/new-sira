@@ -67,10 +67,18 @@ class ReportService {
     //     const
     // }
 
-    public getReport = async (userId: string): Promise<IReport[]> => {
+    public getReports = async (userId: string): Promise<IReport[]> => {
         if (!Types.ObjectId.isValid(userId)) throw new Error('Invalid User ID Provided');
         const id = new Types.ObjectId(userId);
         const report = await Report.find({ userId: id });
+        return report;
+    };
+
+    public getReportById = async (reportId: string, userId: string): Promise<IReport | null> => {
+        if (!Types.ObjectId.isValid(userId)) throw new Error('Invalid User ID Provided');
+        if (!Types.ObjectId.isValid(reportId)) throw new Error('Invalid Report ID Provided');
+        const id = new Types.ObjectId(userId);
+        const report = await Report.findOne({ userId: id, _id: reportId });
         return report;
     };
 

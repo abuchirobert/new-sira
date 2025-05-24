@@ -14,10 +14,10 @@ export const generateToken = (res: Response, user: { _id: string }): string => {
         throw new Error('Token not generated');
     }
     res.cookie('token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        partitioned: true,
+        // httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        // partitioned: true,
         maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
     });
     console.log(`Token generated for user ${user._id}`);
