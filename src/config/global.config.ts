@@ -1,6 +1,7 @@
 import { configDotenv } from 'dotenv';
 
-if (process.env.NODE_ENV !== 'production') configDotenv();
+if (process.env.NODE_ENV !== 'production')
+    configDotenv();
 
 const AppConfig: any = {
     db: {
@@ -10,9 +11,13 @@ const AppConfig: any = {
     server: {
         port: process.env.PORT || 3000
     },
+   
 
     secret: {
         jwt: process.env.JWT_SECRET
+    },
+    cors: {
+        url: process.env.CORS_URL
     }
 };
 

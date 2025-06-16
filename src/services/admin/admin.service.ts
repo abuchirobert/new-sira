@@ -50,7 +50,7 @@ class AdminService {
      */
     async getReportsByUser(id: Types.ObjectId) {
         try {
-            const reports = await Report.find({ _id: id }).populate('_id', 'name email');
+            const reports = await Report.find({ userId: id }).populate('_id', 'name email');
             log(reports, 'Reports From ID');
             console.log(`Found ${reports.length} reports`);
             return reports;

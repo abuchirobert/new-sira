@@ -3,7 +3,6 @@ import { AppConfig } from './config/global.config';
 import CustomError from './errors/CustomError';
 import globalError from './errors/global.error';
 import router from './routes';
-import 'dotenv/config';
 import connectDB from './config/db.config';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -11,17 +10,21 @@ import cors from 'cors';
 connectDB();
 
 const app: Application = express();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(
     cors({
-        origin: ['http://localhost:3000'],
+        origin: [AppConfig.cors.url],
         credentials: true
     })
 );
+
+
+console.log(`Cors url: ${AppConfig.cors.url}`)
+
+
 
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.send('Hello, Welcome To Sira Project, A Project that Helps students to Report All the Incidents in the School, Enjoy the App...');
@@ -35,4 +38,6 @@ app.use('*', (req: Request, res: Response, next: NextFunction) => {
 
 app.use(globalError);
 
-app.listen(AppConfig.server.port, () => console.log(`App Listening on Port ${AppConfig.server.port}`));
+app.listen(AppConfig.server.port, () =>
+    console.log(`App Listening on http://localhost:${AppConfig.server.port}`)
+);
