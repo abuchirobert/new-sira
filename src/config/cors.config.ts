@@ -2,9 +2,7 @@ import { CorsOptions } from 'cors';
 import { AppConfig } from './global.config';
 
 const allowedOrigins = [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'https://sira-frontend.vercel.app', // Add your frontend deployment URL
+    'https://projectsira.vercel.app', // Add your frontend deployment URL
     AppConfig.cors.url
 ];
 
