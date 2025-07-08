@@ -32,6 +32,7 @@ class AdminService {
                 throw new CustomError('Invalid report status', 400);
             }
 
+            // Fetch the report with its issueType (reportType)
             const report = await Report.findByIdAndUpdate(reportId, { status: newStatus }, { new: true }).populate('userId', 'name email');
 
             if (!report) {
@@ -40,8 +41,11 @@ class AdminService {
 
             // Trigger notification if status is resolved
             if (newStatus === EvidenceStatus.RESOLVED && report.userId) {
+                // Use issueType as the report type for the message
+                const reportType = report.issueType;
                 const userIdStr = typeof report.userId === 'object' && report.userId._id ? report.userId._id.toString() : report.userId.toString();
-                await createNotification(userIdStr, 'Your report has been marked as resolved.');
+                const message = `Your report on ${reportType} has been fixed and marked as resolved.`;
+                await createNotification(userIdStr, message);
             }
 
             return report;
