@@ -3,6 +3,7 @@ import CustomError from '../../errors/CustomError';
 import { EvidenceStatus } from '../../interfaces/report.interface';
 import Report from '../../models/report.model';
 import { log } from 'console';
+import { createNotification } from '../../controllers/notification.controller';
 
 class AdminService {
     /**
@@ -35,6 +36,12 @@ class AdminService {
 
             if (!report) {
                 throw new CustomError('Report not found', 404);
+            }
+
+            // Trigger notification if status is resolved
+            if (newStatus === EvidenceStatus.RESOLVED && report.userId) {
+                const userIdStr = typeof report.userId === 'object' && report.userId._id ? report.userId._id.toString() : report.userId.toString();
+                await createNotification(userIdStr, 'Your report has been marked as resolved.');
             }
 
             return report;

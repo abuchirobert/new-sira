@@ -83,4 +83,7 @@ class AuthToken {
     };
 }
 
+const authToken = new AuthToken();
+export const userTokenMiddleware = authToken.verifyToken;
+
 export default AuthToken;

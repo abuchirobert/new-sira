@@ -17,8 +17,8 @@ const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors(corsOptions));
-app.use(securityHeaders)
+// app.use(cors(corsOptions));
+// app.use(securityHeaders)
 
 console.log(`Cors url: ${AppConfig.cors.url}`)
 
