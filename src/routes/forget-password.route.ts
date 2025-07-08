@@ -9,6 +9,6 @@ router.route('/forgot-password').post(AuthController.initiatePasswordResetValida
 
 router.route('/verify-otp').post(AuthController.verifyOTPValidation, AuthController.verifyOTP);
 
-router.route('/reset-password').post(AuthController.resetPasswordValidation, AuthController.resetPassword);
-
+router.route('/reset-password').post(AuthController.resetPassword);
+//AuthController.resetPasswordValidation,
 export default router;
